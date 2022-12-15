@@ -7,15 +7,12 @@
       :key="alat.product_id"
       :id="alat.product_id"
     >
-      <img :src="require(alat.img_filepath)" class="card-img-top" />
+      <img :src="alat.img_filepath" alt="" class="card-img-top" />
       <div class="card-body">
         <h5 class="card-title">
           {{ alat.product_name }}
         </h5>
         <h6 class="card-subtitle mb-2">IDR {{ alat.product_price }}</h6>
-        <p class="card-text">
-          {{ alat.img_filepath }}
-        </p>
         <button class="btn btn-dark d-block w-100">
           <i class="bi bi-cart-plus-fill me-2"></i>Add Product
         </button>
@@ -31,7 +28,7 @@ export default {
   name: "AlatTulis",
   data() {
     return {
-      alat_tulis: null,
+      alat_tulis: [],
     };
   },
   methods: {
@@ -40,7 +37,15 @@ export default {
       axios
         .get(path)
         .then((res) => {
-          this.alat_tulis = res.data;
+          let alat_tulis = [];
+          res.data.forEach(function (obj) {
+            obj.img_filepath = "http://127.0.0.1:5000/" + obj.img_filepath;
+            obj.product_name =
+              obj.product_name.charAt(0).toUpperCase() +
+              obj.product_name.slice(1);
+            alat_tulis.push(obj);
+          });
+          this.alat_tulis = alat_tulis;
         })
         .catch((error) => {
           // eslint-disable-next-line

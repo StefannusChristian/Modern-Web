@@ -7,6 +7,7 @@
       :key="pakai.product_id"
       :id="pakai.product_id"
     >
+      <img :src="pakai.img_filepath" alt="" class="card-img-top" />
       <div class="card-body">
         <h5 class="card-title">
           {{ pakai.product_name }}
@@ -27,7 +28,7 @@ export default {
   name: "Pakaian",
   data() {
     return {
-      pakaian: null,
+      pakaian: [],
     };
   },
   methods: {
@@ -36,7 +37,15 @@ export default {
       axios
         .get(path)
         .then((res) => {
-          this.pakaian = res.data;
+          let pakaian = [];
+          res.data.forEach(function (obj) {
+            obj.img_filepath = "http://127.0.0.1:5000/" + obj.img_filepath;
+            obj.product_name =
+              obj.product_name.charAt(0).toUpperCase() +
+              obj.product_name.slice(1);
+            pakaian.push(obj);
+          });
+          this.pakaian = pakaian;
         })
         .catch((error) => {
           // eslint-disable-next-line

@@ -1,5 +1,6 @@
+import os
 from package import app, db
-from flask import render_template, redirect, request, url_for, session, jsonify
+from flask import render_template, redirect, request, url_for, session, jsonify, send_from_directory
 from package.models import User, Product
 
 @app.route('/pakaian', methods=['GET'])
@@ -47,3 +48,9 @@ def alat_tulis():
         })
     return jsonify(alat_tulis_list)
 
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(APP_ROOT, 'images')
+
+@app.route('/static/<filename>')
+def get_file(filename):
+    return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'],filename)
