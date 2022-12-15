@@ -1,16 +1,34 @@
 from package import app, db
-from flask import render_template, redirect, request, url_for, session
-from package.models import User
+from flask import render_template, redirect, request, url_for, session, jsonify
+from package.models import User, Product
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-    if not session.get('username'):
-        return redirect(url_for('login'))
-    else:
-        # Username and role must exist already in session data
-        # Therefore, they have logged in
-        # Redirect them to their respective role page
-        return redirect(url_for(session['role']))
+    all_products = Product.query.all()
+    product_list = []
+
+    for i in range(len(all_products)):
+        product_list.append({
+            'product_id': all_products[i].product_id,
+            'category_id': all_products[i].category_id,
+            'product_name': all_products[i].product_name,
+            'product_price': all_products[i].product_price,
+        })
+    return jsonify(product_list)
+
+@app.route('/pakaian', methods=['GET'])
+def pakaian():
+    all_pakaian = Product.query.filter_by(category_id=1).all()
+    pakaian_list = []
+
+    for i in range(len(all_pakaian)):
+        pakaian_list.append({
+            'product_id': all_pakaian[i].product_id,
+            'category_id': all_pakaian[i].category_id,
+            'product_name': all_pakaian[i].product_name,
+            'product_price': all_pakaian[i].product_price,
+        })
+    return jsonify(pakaian_list)
     
 @app.route('/login', methods=['POST', 'GET'])
 def login():

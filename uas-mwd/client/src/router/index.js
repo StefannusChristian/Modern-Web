@@ -1,17 +1,17 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Ping from "../components/Ping.vue";
-import Books from "../components/Books.vue";
+import Index from "../components/Index.vue";
+import Pakaian from "../components/Pakaian.vue";
 
 const routes = [
   {
-    path: "/ping",
-    name: "Ping",
-    component: Ping,
+    path: "/",
+    name: "Index",
+    component: Index,
   },
   {
-    path: "/books",
-    name: "Books",
-    component: Books,
+    path: "/pakaian",
+    name: "Pakaian",
+    component: Pakaian,
   },
 ];
 
