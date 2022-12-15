@@ -1,7 +1,12 @@
 <template>
-  <h1>Hello World</h1>
+  <h1>Ini App Vue</h1>
   <a href="/">Home</a>
-  <a href="/ping">Ping</a>
-  <a href="/books">Books</a>
+  <br /><br />
+  <router-link :to="{ path: 'pakaian' }">Pakaian</router-link>
+  <br /><br />
+  <router-link :to="{ path: 'makanan' }">Makanan</router-link>
+  <br /><br />
+  <router-link :to="{ path: 'alat_tulis' }">Alat Tulis</router-link>
+  <br /><br />
   <router-view />
 </template>

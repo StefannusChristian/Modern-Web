@@ -1,26 +1,29 @@
 <template>
-  <div>
-    {{ books }}
-  </div>
+  <h1>Ini Component Pakaian</h1>
+  <ul>
+    <li v-for="pakai in pakaian" :key="pakai.product_id" :id="pakai.product_id">
+      {{ pakai }}
+    </li>
+  </ul>
 </template>
 
 <script>
 import axios from "axios";
 
 export default {
-  name: "Books",
+  name: "Pakaian",
   data() {
     return {
-      books: null,
+      pakaian: null,
     };
   },
   methods: {
-    getBooks() {
-      const path = "http://127.0.0.1:5000/books";
+    getPakaian() {
+      const path = "http://127.0.0.1:5000/pakaian";
       axios
         .get(path)
         .then((res) => {
-          this.books = res.data.books;
+          this.pakaian = res.data;
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -29,7 +32,7 @@ export default {
     },
   },
   created() {
-    this.getBooks();
+    this.getPakaian();
   },
 };
 </script>

@@ -1,23 +1,29 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Ping from "../components/Ping.vue";
-import Books from "../components/Books.vue";
+import Pakaian from "../components/Pakaian.vue";
+import Makanan from "../components/Makanan.vue";
+import AlatTulis from "../components/AlatTulis.vue";
 
 const routes = [
-  {
-    path: "/ping",
-    name: "Ping",
-    component: Ping,
-  },
-  {
-    path: "/books",
-    name: "Books",
-    component: Books,
-  },
+    {
+        path: "/pakaian",
+        name: "Pakaian",
+        component: Pakaian,
+    },
+    {
+        path: "/makanan",
+        name: "Makanan",
+        component: Makanan,
+    },
+    {
+        path: "/alat_tulis",
+        name: "AlatTulis",
+        component: AlatTulis,
+    },
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes,
+    history: createWebHistory(process.env.BASE_URL),
+    routes,
 });
 
 export default router;
