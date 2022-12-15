@@ -60,11 +60,13 @@ class Product(db.Model):
     category_id =  db.Column(db.Integer, db.ForeignKey('category.category_id'))
     product_name = db.Column(db.String(100))
     product_price = db.Column(db.Float)
+    img_filepath = db.Column(db.String(255))
 
-    def __init__ (self,category_id, product_name, product_price):
+    def __init__ (self,category_id, product_name, product_price, img_filepath):
         self.category_id = category_id
         self.product_name = product_name
         self.product_price = product_price
+        self.img_filepath = img_filepath
 
 
 

@@ -2,16 +2,20 @@
   <h1 class="mb-3">Ini Component Alat Tulis</h1>
   <div class="d-flex row flex-wrap justify-content-center">
     <div
-      class="card product-card mx-2"
+      class="card product-card px-0"
       v-for="alat in alat_tulis"
       :key="alat.product_id"
       :id="alat.product_id"
     >
+      <img :src="require(alat.img_filepath)" class="card-img-top" />
       <div class="card-body">
         <h5 class="card-title">
           {{ alat.product_name }}
         </h5>
         <h6 class="card-subtitle mb-2">IDR {{ alat.product_price }}</h6>
+        <p class="card-text">
+          {{ alat.img_filepath }}
+        </p>
         <button class="btn btn-dark d-block w-100">
           <i class="bi bi-cart-plus-fill me-2"></i>Add Product
         </button>
