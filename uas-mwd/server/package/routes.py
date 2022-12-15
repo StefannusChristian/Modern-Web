@@ -13,6 +13,7 @@ def pakaian():
             'category_id': all_pakaian[i].category_id,
             'product_name': all_pakaian[i].product_name,
             'product_price': all_pakaian[i].product_price,
+            'img_filepath': all_pakaian[i].img_filepath,
         })
     return jsonify(pakaian_list)
     
@@ -27,6 +28,7 @@ def makanan():
             'category_id': all_makanan[i].category_id,
             'product_name': all_makanan[i].product_name,
             'product_price': all_makanan[i].product_price,
+            'img_filepath': all_makanan[i].img_filepath,
         })
     return jsonify(makanan_list)
     
@@ -41,6 +43,7 @@ def alat_tulis():
             'category_id': all_alat_tulis[i].category_id,
             'product_name': all_alat_tulis[i].product_name,
             'product_price': all_alat_tulis[i].product_price,
+            'img_filepath': all_alat_tulis[i].img_filepath,
         })
     return jsonify(alat_tulis_list)
 
