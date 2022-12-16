@@ -20,7 +20,7 @@ db.session.add(alat_tulis)
 kaos = Product(1,"kaos",75900,"static/images/pakaian/kaos.jpeg")
 hoodie = Product(1,"hoodie",257999,"static/images/pakaian/hoodie.jpeg")
 sweater = Product(1,"sweater",149999,"static/images/pakaian/sweater.jpeg")
-kaos_kaki = Product(1,"kaos kaki",149999,"static/images/pakaian/kaos_kaki.jpeg")
+kaos_kaki = Product(1,"kaos kaki",149999,"static/images/pakaian/kaos_kaki.jpg")
 kemeja = Product(1,"kemeja",149999,"static/images/pakaian/kemeja.jpg")
 jogging_pants = Product(1,"jogging pants",149999,"static/images/pakaian/jogging_pants.jpg")
 

@@ -13,7 +13,10 @@
           {{ pakai.product_name }}
         </h5>
         <h6 class="card-subtitle mb-2">{{ pakai.product_price }}</h6>
-        <button class="btn btn-dark d-block w-100">
+        <button
+          @click="add_product(pakai.product_id)"
+          class="btn btn-dark d-block w-100"
+        >
           <i class="bi bi-cart-plus-fill me-2"></i>Add Product
         </button>
       </div>
@@ -44,6 +47,7 @@ export default {
             obj.product_name =
               obj.product_name.charAt(0).toUpperCase() +
               obj.product_name.slice(1);
+            obj.product_price_int = obj.product_price;
             obj.product_price = rupiah(obj.product_price);
             pakaian.push(obj);
           });
@@ -61,6 +65,23 @@ export default {
       })
         .format(num)
         .slice(0, -3);
+    },
+    add_product(pakaian_id) {
+      let product_index = this.get_product_id_index(pakaian_id);
+      let product = {
+        product_id: pakaian_id,
+        product_name: this.pakaian[product_index].product_name,
+        product_price: this.pakaian[product_index].product_price_int,
+        product_qty: 1,
+      };
+      this.emitter.emit("add_product", product);
+    },
+    get_product_id_index(pakaian_id) {
+      for (let index = 0; index < this.pakaian.length; index++) {
+        if (this.pakaian[index].product_id === pakaian_id) {
+          return index;
+        }
+      }
     },
   },
   created() {
