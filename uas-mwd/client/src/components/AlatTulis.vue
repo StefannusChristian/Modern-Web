@@ -2,12 +2,12 @@
   <h1 class="mb-3">Ini Component Alat Tulis</h1>
   <div class="d-flex row flex-wrap justify-content-center">
     <div
-      class="card product-card px-0"
+      class="card product-card px-0 mx-2 mb-3"
       v-for="alat in alat_tulis"
       :key="alat.product_id"
       :id="alat.product_id"
     >
-      <img :src="alat.img_filepath" alt="" class="card-img-top" />
+      <img :src="alat.img_filepath" alt="" class="card-img-top img-fluid" />
       <div class="card-body">
         <h5 class="card-title">
           {{ alat.product_name }}

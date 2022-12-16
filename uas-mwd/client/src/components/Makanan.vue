@@ -2,12 +2,12 @@
   <h1 class="mb-3">Ini Component Makanan</h1>
   <div class="d-flex row flex-wrap justify-content-center">
     <div
-      class="card product-card mx-2"
+      class="card product-card px-0 mx-2 mb-3"
       v-for="makan in makanan"
       :key="makan.product_id"
       :id="makan.product_id"
     >
-      <img :src="makan.img_filepath" alt="" class="card-img-top" />
+      <img :src="makan.img_filepath" alt="" class="card-img-top img-fluid" />
       <div class="card-body">
         <h5 class="card-title">
           {{ makan.product_name }}
