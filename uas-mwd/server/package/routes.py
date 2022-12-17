@@ -1,7 +1,8 @@
 import os
 from package import app, db
 from flask import render_template, redirect, request, url_for, session, jsonify, send_from_directory
-from package.models import User, Product, Invoice
+from package.models import User, Product, Invoice, InvoiceDetail
+import datetime
 
 @app.route('/latest_invoice_no', methods=['GET'])
 def latest_invoice_no():
@@ -9,7 +10,23 @@ def latest_invoice_no():
 
 @app.route('/save_invoice', methods=['POST'])
 def save_invoice():
-    pass
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json'):
+        product_list = request.json
+        total_price = sum([item['product_price']*item['product_qty'] for item in product_list])
+        inv_date = datetime.date.today()
+        new_invoice = Invoice(1,total_price,10,inv_date)
+        db.session.add(new_invoice)
+        db.session.commit()
+        latest_invoice_id = Invoice.query.all()[-1].invoice_id
+        for item in product_list:
+            new_invoice_detail = InvoiceDetail(latest_invoice_id,item['product_id'],item['product_qty'])
+            db.session.add(new_invoice_detail)
+        db.session.commit()
+        return jsonify(total_price)
+    else: 
+        return 'Content-Type not supported!'
+
 
 @app.route('/pakaian', methods=['GET'])
 def pakaian():
@@ -55,6 +72,22 @@ def alat_tulis():
             'img_filepath': all_alat_tulis[i].img_filepath,
         })
     return jsonify(alat_tulis_list)
+
+@app.route('/report_sales', methods=['GET'])
+def report_sales():
+    get_invoices = Invoice.query.all()
+    all_invoices = []
+    for i in range(len(get_invoices)):
+        all_invoices.append({
+            'invoice_id': get_invoices[i].invoice_id,
+            'user_id':get_invoices[i].user_id,
+            'total_price':get_invoices[i].total_price,
+            'total_discount':get_invoices[i].total_discount,
+            'invoice_date':get_invoices[i].invoice_date
+        })
+    return jsonify(all_invoices)
+
+
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(APP_ROOT, 'images')

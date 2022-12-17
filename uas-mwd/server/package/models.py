@@ -25,7 +25,7 @@ class Invoice(db.Model):
     total_discount = db.Column(db.Float)
     invoice_date = db.Column(db.DateTime)
 
-    def __init__ (self, user_id,total_price,total_discount,invoice_date):
+    def __init__ (self,user_id,total_price,total_discount,invoice_date):
         self.user_id = user_id
         self.total_price = total_price
         self.total_discount = total_discount

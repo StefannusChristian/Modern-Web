@@ -4,10 +4,23 @@
     <ProductNavigation />
   </div>
   <div class="my-3 p-3 d-flex flex-row">
-    <LeftSidebar :latestInvoiceNo="latestInvoiceNo" />
+    <LeftSidebar v-if="showSideBar" :latestInvoiceNo="latestInvoiceNo" />
     <div class="w-75 px-5">
       <router-view />
-      <button class="btn btn-primary mt-3">Report Sales</button>
+      <router-link
+        @click="toggleSideBar()"
+        class="btn btn-primary mt-3"
+        to="/report_sales"
+        v-if="showSideBar"
+        >Report Sales</router-link
+      >
+      <router-link
+        @click="toggleSideBar()"
+        class="btn btn-primary mt-3"
+        to="/"
+        v-else
+        >Go Back</router-link
+      >
     </div>
   </div>
 </template>
@@ -24,7 +37,7 @@ export default {
     ProductNavigation,
   },
   data() {
-    return { latestInvoiceNo: null };
+    return { latestInvoiceNo: null, showSideBar: true };
   },
   methods: {
     getLatestInvoiceNo() {
@@ -35,6 +48,9 @@ export default {
           this.latestInvoiceNo = res.data;
         }
       });
+    },
+    toggleSideBar() {
+      this.showSideBar = !this.showSideBar;
     },
   },
   created() {

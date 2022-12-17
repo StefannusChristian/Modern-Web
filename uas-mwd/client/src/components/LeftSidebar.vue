@@ -27,16 +27,34 @@
               <div class="fw-400">{{ item.product_name }}</div>
               <div class="fw-400">x{{ item.product_qty }}</div>
             </div>
-            <span class="fw-400">
-              {{
-                new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                })
-                  .format(item.product_price * item.product_qty)
-                  .slice(0, -3)
-              }}
-            </span>
+            <div class="d-flex justify-content-between align-items-center py-2">
+              <span class="fw-400">
+                {{
+                  new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                  })
+                    .format(item.product_price * item.product_qty)
+                    .slice(0, -3)
+                }}
+              </span>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button
+                  @click="decrease_product(item)"
+                  type="button"
+                  class="btn btn-outline-dark"
+                >
+                  -
+                </button>
+                <button
+                  @click="add_product(item)"
+                  type="button"
+                  class="btn btn-outline-dark"
+                >
+                  +
+                </button>
+              </div>
+            </div>
           </li>
         </ul>
       </div>
@@ -55,7 +73,7 @@
       </h5>
       <button
         class="btn btn-success d-block w-100 mb-1 text-start"
-        @click="saveInvoice"
+        @click="pay_product()"
       >
         <i class="bi bi-credit-card-2-back-fill me-2"></i> Pay
       </button>
@@ -67,6 +85,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "LeftSidebar",
   data() {
@@ -91,6 +110,29 @@ export default {
         this.product_list.push(item);
       }
     },
+    decrease_product(item) {
+      for (let index = 0; index < this.product_list.length; index++) {
+        if (this.product_list[index].product_id === item.product_id) {
+          if (this.product_list[index].product_qty > 1) {
+            this.product_list[index].product_qty--;
+          } else if (this.product_list[index].product_qty == 1) {
+            this.product_list.shift();
+          }
+        }
+      }
+    },
+    pay_product() {
+      const post_url = "http://127.0.0.1:5000/save_invoice";
+      axios
+        .post(post_url, JSON.stringify(this.product_list), {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => console.log(response))
+        .catch((error) => console.log(error));
+      this.product_list = [];
+    },
     cancel() {
       this.product_list = [];
     },
@@ -103,12 +145,6 @@ export default {
       // This arrangement can be altered based on how we want the date's format to appear.
       let currentDate = `${day}/${month}/${year}`;
       return currentDate;
-    },
-    fetchLatestInvoiceNo() {
-      console.log("Hello world!");
-    },
-    saveInvoice() {
-      console.log(this.product_list);
     },
   },
 
