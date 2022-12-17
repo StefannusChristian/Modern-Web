@@ -53,6 +53,9 @@
                 >
                   +
                 </button>
+                <button @click="clear(item)" class="btn btn-danger">
+                  Clear
+                </button>
               </div>
             </div>
           </li>
@@ -80,6 +83,7 @@
       <button @click="cancel" class="btn btn-danger d-block w-100 text-start">
         <i class="bi bi-x-square-fill me-2"></i>Cancel
       </button>
+      <h3>{{ pay_warning_message }}</h3>
     </div>
   </div>
 </template>
@@ -92,49 +96,61 @@ export default {
     return {
       product_list: [],
       currentDate: this.formatDate(),
+      pay_warning_message: "",
     };
   },
   props: {
     latestInvoiceNo: Number,
   },
   methods: {
-    add_product(item) {
-      let item_not_yet_added = true;
+    get_product_id_index(item) {
       for (let index = 0; index < this.product_list.length; index++) {
         if (this.product_list[index].product_id === item.product_id) {
-          this.product_list[index].product_qty++;
-          item_not_yet_added = false;
+          return index;
         }
       }
-      if (item_not_yet_added) {
+      return -1;
+    },
+    add_product(item) {
+      this.pay_warning_message = "";
+      let index = this.get_product_id_index(item);
+      // Berarti belom ada di product list
+      if (index === -1) {
         this.product_list.push(item);
+      } else {
+        this.product_list[index].product_qty++;
       }
     },
     decrease_product(item) {
-      for (let index = 0; index < this.product_list.length; index++) {
-        if (this.product_list[index].product_id === item.product_id) {
-          if (this.product_list[index].product_qty > 1) {
-            this.product_list[index].product_qty--;
-          } else if (this.product_list[index].product_qty == 1) {
-            this.product_list.shift();
-          }
-        }
+      let index = this.get_product_id_index(item);
+      this.product_list[index].product_qty--;
+      if (this.product_list[index].product_qty < 1) {
+        this.product_list.shift();
       }
     },
     pay_product() {
       const post_url = "http://127.0.0.1:5000/save_invoice";
-      axios
-        .post(post_url, JSON.stringify(this.product_list), {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => console.log(response))
-        .catch((error) => console.log(error));
-      this.product_list = [];
+      if (this.product_list.length > 0) {
+        this.pay_warning_message = "";
+        axios
+          .post(post_url, JSON.stringify(this.product_list), {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => console.log(response))
+          .catch((error) => console.log(error));
+        this.product_list = [];
+      } else {
+        this.pay_warning_message = "PRODUCT LIST IS EMPTY!";
+      }
     },
     cancel() {
       this.product_list = [];
+    },
+    clear(item) {
+      let index = this.get_product_id_index(item);
+      this.product_list.splice(index, 1);
     },
     formatDate() {
       let date = new Date();
@@ -160,6 +176,7 @@ export default {
 
   mounted() {
     this.emitter.on("add_product", (item) => {
+      console.log(item.product_name);
       this.add_product(item);
     });
   },
