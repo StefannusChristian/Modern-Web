@@ -31,7 +31,7 @@ export default {
   name: "Pakaian",
   data() {
     return {
-      pakaian: [],
+      pakaian: null,
     };
   },
   methods: {
