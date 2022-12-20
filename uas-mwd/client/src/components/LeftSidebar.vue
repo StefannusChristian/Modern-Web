@@ -4,7 +4,7 @@
       <div class="mb-3">
         <div class="bg-white p-3 rounded-3">
           <span class="fs-6 text-muted d-block">Admin</span>
-          <span class="fw-600 fs-5">John Doe</span>
+          <span class="fw-600 fs-5">{{ currentUser }}</span>
         </div>
       </div>
       <div class="mb-3 px-1">
@@ -76,9 +76,9 @@
       </h5>
       <button
         class="btn btn-success d-block w-100 mb-1 text-start"
-        @click="pay_product()"
+        @click="checkout()"
       >
-        <i class="bi bi-credit-card-2-back-fill me-2"></i> Pay
+        <i class="bi bi-credit-card-2-back-fill me-2"></i>Checkout
       </button>
       <button @click="cancel" class="btn btn-danger d-block w-100 text-start">
         <i class="bi bi-x-square-fill me-2"></i>Cancel
@@ -110,6 +110,7 @@ export default {
       product_list: [],
       currentDate: this.formatDate(),
       pay_warning_message: "",
+      currentUser: sessionStorage.getItem("currentLoggedIn"),
     };
   },
   props: {
@@ -141,21 +142,14 @@ export default {
         this.product_list.shift();
       }
     },
-    pay_product() {
-      const post_url = "http://127.0.0.1:5000/save_invoice";
+    checkout() {
       if (this.product_list.length > 0) {
         this.pay_warning_message = "";
-        axios
-          .post(post_url, JSON.stringify(this.product_list), {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then((response) => console.log(response))
-          .catch((error) => console.log(error));
-        this.product_list = [];
-        this.$router.push("/payment_success");
+        console.log("masuk sini");
+        this.emitter.emit("product-list", this.product_list);
+        // this.product_list = [];
         this.emitter.emit("get-new-invoice-no");
+        this.$router.push("/payment_page");
       } else {
         this.pay_warning_message = "Product list is empty.";
       }
@@ -194,7 +188,6 @@ export default {
 
   mounted() {
     this.emitter.on("add_product", (item) => {
-      console.log(item.product_name);
       this.add_product(item);
     });
   },

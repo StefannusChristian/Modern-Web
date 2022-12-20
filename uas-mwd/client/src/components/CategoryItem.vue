@@ -1,5 +1,4 @@
 <template>
-  <h1 class="mb-3">Ini Categories!</h1>
   <div class="d-flex row flex-wrap justify-content-center">
     <div
       class="card product-card px-0 mx-2 mb-3"
