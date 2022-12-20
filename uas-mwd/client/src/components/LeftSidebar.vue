@@ -54,7 +54,7 @@
                   +
                 </button>
                 <button @click="clear(item)" class="btn btn-danger">
-                  Clear
+                  <i class="bi bi-trash3-fill"></i>
                 </button>
               </div>
             </div>
@@ -154,6 +154,8 @@ export default {
           .then((response) => console.log(response))
           .catch((error) => console.log(error));
         this.product_list = [];
+        this.$router.push("/payment_success");
+        this.emitter.emit("get-new-invoice-no");
       } else {
         this.pay_warning_message = "Product list is empty.";
       }

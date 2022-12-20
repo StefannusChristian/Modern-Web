@@ -1,5 +1,5 @@
 <template>
-  <h1 class="mb-3">Ini Component Pakaian</h1>
+  <h1 class="mb-3 fw-600">Pakaian</h1>
   <div class="d-flex row flex-wrap justify-content-center">
     <div
       class="card product-card px-0 mx-2 mb-3"

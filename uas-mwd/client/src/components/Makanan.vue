@@ -1,6 +1,6 @@
 <template>
-  <h1 class="mb-3">Ini Component Makanan</h1>
-  <div class="d-flex row flex-wrap justify-content-center">
+  <h1 class="mb-3 fw-600">Makanan</h1>
+  <div v-if="loggedIn" class="d-flex row flex-wrap justify-content-center">
     <div
       class="card product-card px-0 mx-2 mb-3"
       v-for="makan in makanan"
@@ -32,6 +32,7 @@ export default {
   data() {
     return {
       makanan: [],
+      loggedIn: false,
     };
   },
 
@@ -87,6 +88,15 @@ export default {
   },
   created() {
     this.getMakanan();
+  },
+  mounted() {
+    let session = sessionStorage.getItem("currentLoggedIn");
+    if (session !== null) {
+      this.loggedIn = true;
+    } else {
+      this.loggedIn = false;
+      this.$router.push("/");
+    }
   },
 };
 </script>
