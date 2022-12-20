@@ -83,7 +83,20 @@
       <button @click="cancel" class="btn btn-danger d-block w-100 text-start">
         <i class="bi bi-x-square-fill me-2"></i>Cancel
       </button>
-      <h3>{{ pay_warning_message }}</h3>
+      <div
+        v-if="pay_warning_message !== ''"
+        class="alert alert-danger alert-dismissible fade show mt-3"
+        role="alert"
+      >
+        <strong>{{ pay_warning_message }}</strong>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+          @click="toggleAlert"
+        ></button>
+      </div>
     </div>
   </div>
 </template>
@@ -142,11 +155,14 @@ export default {
           .catch((error) => console.log(error));
         this.product_list = [];
       } else {
-        this.pay_warning_message = "PRODUCT LIST IS EMPTY!";
+        this.pay_warning_message = "Product list is empty.";
       }
     },
     cancel() {
       this.product_list = [];
+    },
+    toggleAlert() {
+      this.pay_warning_message = "";
     },
     clear(item) {
       let index = this.get_product_id_index(item);
