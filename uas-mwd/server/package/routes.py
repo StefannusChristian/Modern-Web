@@ -75,6 +75,22 @@ def categories():
             })
     return jsonify(category_names)
 
+
+@app.route('/categories/<category_id>', methods=['GET'])
+def get_products(category_id):
+    all_get_products = Product.query.filter_by(category_id=category_id).all()
+    get_products_list = []
+
+    for i in range(len(all_get_products)):
+        get_products_list.append({
+            'product_id': all_get_products[i].product_id,
+            'category_id': all_get_products[i].category_id,
+            'product_name': all_get_products[i].product_name,
+            'product_price': all_get_products[i].product_price,
+            'img_filepath': all_get_products[i].img_filepath,
+        })
+    return jsonify(get_products_list)
+
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(APP_ROOT, 'images')
 
