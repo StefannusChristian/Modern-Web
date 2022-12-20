@@ -1,7 +1,7 @@
 <template>
   <ul class="nav justify-content-end">
     <li class="nav-item">
-      <router-link class="nav-link" to="/">Home</router-link>
+      <router-link class="nav-link text-dark" to="/">Home</router-link>
     </li>
     <li
       v-for="category in all_categories"
@@ -11,8 +11,24 @@
     >
       {{ category.category_name }}
     </li>
+
     <li class="nav-item">
-      <a href="#" class="nav-link">
+      <router-link class="nav-link text-dark" to="/alat_tulis"
+        >Alat Tulis</router-link
+      >
+    </li>
+    <li class="nav-item">
+      <router-link class="nav-link text-dark" to="/pakaian"
+        >Pakaian</router-link
+      >
+    </li>
+    <li class="nav-item">
+      <router-link class="nav-link text-dark" to="/makanan"
+        >Makanan</router-link
+      >
+    </li>
+    <li class="nav-item">
+      <a href="#" class="nav-link text-dark" @click="logout">
         Logout <i class="bi bi-box-arrow-right ms-2"></i
       ></a>
     </li>
@@ -48,6 +64,11 @@ export default {
     select_category(category_id) {
       console.log(category_id);
       this.emitter.emit("select_category", category_id);
+    },
+    logout() {
+      sessionStorage.clear();
+      this.emitter.emit("logged-out");
+      this.$router.push("/");
     },
   },
   created() {

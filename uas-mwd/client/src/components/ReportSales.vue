@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container bg-dark text-white w-100">
     <h2>Report Sales</h2>
     <div v-for="invoice in invoices" :key="invoice.invoice_id">
       {{ invoice }}
