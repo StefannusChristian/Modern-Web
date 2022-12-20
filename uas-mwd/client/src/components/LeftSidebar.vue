@@ -145,10 +145,9 @@ export default {
     checkout() {
       if (this.product_list.length > 0) {
         this.pay_warning_message = "";
-        console.log("masuk sini");
-        this.emitter.emit("product-list", this.product_list);
-        // this.product_list = [];
-        this.emitter.emit("get-new-invoice-no");
+        localStorage.setItem("product_list", JSON.stringify(this.product_list));
+        this.product_list = [];
+        // this.emitter.emit("get-new-invoice-no");
         this.$router.push("/payment_page");
       } else {
         this.pay_warning_message = "Product list is empty.";

@@ -15,14 +15,11 @@ export default {
     };
   },
   methods: {},
-  created() {
-    const post_url = "http://127.0.0.1:5000/save_invoice";
-    this.emitter.on("product-list", (productList) => {
-      console.log(productList);
-      this.productList = productList;
-    });
+  mounted() {
+    // const post_url = "http://127.0.0.1:5000/save_invoice";
+    const product_list = localStorage.getItem("product_list");
+    this.productList = product_list;
   },
-  mounted() {},
 };
 </script>
 

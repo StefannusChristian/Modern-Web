@@ -45,7 +45,6 @@ export default {
         });
     },
     select_category(category_id) {
-      console.log(category_id);
       this.emitter.emit("select_category", category_id);
     },
     logout() {

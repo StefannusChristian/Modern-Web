@@ -28,7 +28,11 @@ def login():
 
 @app.route('/latest_invoice_no', methods=['GET'])
 def latest_invoice_no():
-    latest_invoice_no = Invoice.query.all()[-1].invoice_id
+    get_all_invoices = Invoice.query.all()
+    if len(get_all_invoices) == 0:
+        latest_invoice_no = 1
+    else:
+        latest_invoice_no = Invoice.query.all()[-1].invoice_id
     return {'invoice_no': latest_invoice_no}
 
 @app.route('/save_invoice', methods=['POST'])

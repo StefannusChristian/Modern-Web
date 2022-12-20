@@ -38,7 +38,6 @@ export default {
     get_products() {
       const path =
         "http://127.0.0.1:5000/categories/" + this.current_category_id;
-      console.log(path);
       axios
         .get(path)
         .then((res) => {
