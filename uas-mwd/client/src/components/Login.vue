@@ -12,7 +12,7 @@
           v-model="username"
           required
         />
-        <label for="floatingInput">Username</label>
+        <label for="floatingInput">Username:</label>
       </div>
       <div class="form-floating mb-3">
         <input
