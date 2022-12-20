@@ -1,8 +1,11 @@
 import os
 from package import app, db
-from flask import render_template, redirect, request, url_for, session, jsonify, send_from_directory
+from flask import request, jsonify, send_from_directory
 from package.models import User, Product, Invoice, InvoiceDetail
 import datetime
+
+
+
 
 @app.route('/latest_invoice_no', methods=['GET'])
 def latest_invoice_no():
@@ -26,7 +29,6 @@ def save_invoice():
         return jsonify(total_price)
     else: 
         return 'Content-Type not supported!'
-
 
 @app.route('/pakaian', methods=['GET'])
 def pakaian():
@@ -86,7 +88,6 @@ def report_sales():
             'invoice_date':get_invoices[i].invoice_date
         })
     return jsonify(all_invoices)
-
 
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
