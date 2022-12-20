@@ -1,9 +1,30 @@
 <template>
-  <div class="container bg-dark text-white w-100">
-    <h2>Report Sales</h2>
-    <div v-for="invoice in invoices" :key="invoice.invoice_id">
-      {{ invoice }}
+  <div class="w-100">
+    <h2 class="mb-3">Report Sales</h2>
+    <div class="mb-3">
+      <small>Total Sales: </small><br /><span class="fw-600 fs-3">{{
+        total_sales_display
+      }}</span>
     </div>
+    <ul>
+      <li
+        v-for="invoice in invoices"
+        :key="invoice.invoiceId"
+        :id="invoice.invoiceId"
+        class="mb-2 bg-light p-2 rounded-2"
+      >
+        InvoiceID: {{ invoice.invoiceId }}<br />
+        <ul>
+          <li
+            v-for="invoiceDetail in invoice.details"
+            :key="invoiceDetail.invoice_detail_id"
+          >
+            Product ID: {{ invoiceDetail.product_id }} x{{ invoiceDetail.qty }}
+          </li>
+        </ul>
+        Total: {{ invoice.totalPrice }}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -14,20 +35,60 @@ export default {
   data() {
     return {
       invoices: [],
+      total_user_sales: 0,
+      total_sales_display: null,
     };
   },
   methods: {
     getInvoices() {
+      const username = sessionStorage.getItem("currentLoggedIn");
+      console.log(username);
       const path = "http://127.0.0.1:5000/report_sales";
       axios
-        .get(path)
+        .post(
+          path,
+          { username: username },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
         .then((res) => {
-          this.invoices = res.data;
+          console.log(res);
+          this.processInvoiceData(res.data);
         })
         .catch((error) => {
           // eslint-disable-next-line
           console.error(error);
         });
+    },
+    processInvoiceData(data) {
+      for (let i = 0; i < data.invoices.length; i++) {
+        let invoiceObj = {};
+        this.total_user_sales += data.invoices[i].total_price;
+        invoiceObj = data.invoice_details[data.invoices[i].invoice_id];
+        // console.log(invoiceObj);
+
+        let invoice = {
+          invoiceId: data.invoices[i].invoice_id,
+          totalPrice: new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          })
+            .format(data.invoices[i].total_price)
+            .slice(0, -3),
+          details: invoiceObj,
+        };
+
+        this.invoices.push(invoice);
+      }
+      this.total_sales_display = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+      })
+        .format(this.total_user_sales)
+        .slice(0, -3);
     },
   },
   created() {
@@ -35,5 +96,3 @@ export default {
   },
 };
 </script>
-
-<style></style>

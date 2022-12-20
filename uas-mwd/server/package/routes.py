@@ -50,20 +50,38 @@ def save_invoice():
     else: 
         return 'Content-Type not supported!'
 
-
-@app.route('/report_sales', methods=['GET'])
+@app.route('/report_sales', methods=['POST'])
 def report_sales():
-    get_invoices = Invoice.query.all()
-    all_invoices = []
-    for i in range(len(get_invoices)):
-        all_invoices.append({
-            'invoice_id': get_invoices[i].invoice_id,
-            'user_id':get_invoices[i].user_id,
-            'total_price':get_invoices[i].total_price,
-            'total_discount':get_invoices[i].total_discount,
-            'invoice_date':get_invoices[i].invoice_date
-        })
-    return jsonify(all_invoices)
+    if request.method == 'POST':
+        data = request.get_json()["username"];
+        if data:
+            user = User.query.filter_by(user_name=data).first()
+            user_id = user.user_id
+
+            get_invoices = Invoice.query.filter_by(user_id=user_id).all()
+            all_invoices = []
+            invoice_details = {}
+
+            for i in range(len(get_invoices)):
+                all_invoices.append({
+                    'invoice_id': get_invoices[i].invoice_id,
+                    'user_id':get_invoices[i].user_id,
+                    'total_price':get_invoices[i].total_price,
+                    'total_discount':get_invoices[i].total_discount,
+                    'invoice_date': str(get_invoices[i].invoice_date.date())[:-1]
+                })
+                invoice_detail_query = InvoiceDetail.query.filter_by(invoice_id=get_invoices[i].invoice_id).all()
+                invoice_details[get_invoices[i].invoice_id] = []
+                for j in range(len(invoice_detail_query)):
+                    invoice_detail_item = {
+                        "invoice_detail_id": invoice_detail_query[j].invoice_detail_id,
+                        "invoice_id" : invoice_detail_query[j].invoice_id,
+                        "product_id": invoice_detail_query[j].product_id,
+                        "qty": invoice_detail_query[j].qty
+                    }
+                    invoice_details[get_invoices[i].invoice_id].append(invoice_detail_item)
+
+            return {'invoices': all_invoices, 'user_id': user_id, 'invoice_details':invoice_details}
 
 @app.route('/categories', methods=['GET'])
 def categories():

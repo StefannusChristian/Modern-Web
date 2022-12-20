@@ -3,7 +3,8 @@
     <li
       v-for="category in all_categories"
       :key="category.category_id"
-      class="nav-link"
+      class="nav-link text-dark"
+      style="cursor: pointer"
       @click="select_category(category.category_id)"
     >
       {{ category.category_name }}

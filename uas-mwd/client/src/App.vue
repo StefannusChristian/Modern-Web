@@ -6,9 +6,6 @@
   <div class="my-3 p-3 d-flex flex-row" v-if="loggedIn">
     <LeftSidebar v-if="showSideBar" :latestInvoiceNo="latestInvoiceNo" />
     <div :class="[!showSideBar ? 'w-100' : 'w-75', 'px-5']">
-      <small class="d-block fw-500 text-muted" v-if="showSideBar"
-        >Product Category</small
-      >
       <router-view />
       <router-link
         @click="toggleSideBar()"
