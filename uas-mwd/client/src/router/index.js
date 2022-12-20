@@ -1,30 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Pakaian from "../components/Pakaian.vue";
-import Makanan from "../components/Makanan.vue";
-import AlatTulis from "../components/AlatTulis.vue";
-import Home from "../components/Home.vue";
+import Categories from "../components/CategoryItem.vue";
 import ReportSales from "../components/ReportSales.vue";
 
 const routes = [
     {
         path: "/",
-        name: "Home",
-        component: Home,
-    },
-    {
-        path: "/pakaian",
-        name: "Pakaian",
-        component: Pakaian,
-    },
-    {
-        path: "/makanan",
-        name: "Makanan",
-        component: Makanan,
-    },
-    {
-        path: "/alat_tulis",
-        name: "AlatTulis",
-        component: AlatTulis,
+        name: "Categories",
+        component: Categories,
     },
     {
         path: "/report_sales",

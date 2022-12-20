@@ -3,14 +3,13 @@
     <li class="nav-item">
       <router-link class="nav-link" to="/">Home</router-link>
     </li>
-    <li class="nav-item">
-      <router-link class="nav-link" to="/alat_tulis">Alat Tulis</router-link>
-    </li>
-    <li class="nav-item">
-      <router-link class="nav-link" to="/pakaian">Pakaian</router-link>
-    </li>
-    <li class="nav-item">
-      <router-link class="nav-link" to="/makanan">Makanan</router-link>
+    <li
+      v-for="category in all_categories"
+      :key="category.category_id"
+      class="nav-link"
+      @click="select_category(category.category_id)"
+    >
+      {{ category.category_name }}
     </li>
     <li class="nav-item">
       <a href="#" class="nav-link">
@@ -21,8 +20,39 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "ProductNavigation",
+  data() {
+    return {
+      all_categories: [],
+    };
+  },
+  methods: {
+    get_category() {
+      const path = "http://127.0.0.1:5000/categories";
+      axios
+        .get(path)
+        .then((res) => {
+          let all_categories = [];
+          res.data.forEach((obj) => {
+            all_categories.push(obj);
+          });
+          this.all_categories = all_categories;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
+    select_category(category_id) {
+      console.log(category_id);
+      this.emitter.emit("select_category", category_id);
+    },
+  },
+  created() {
+    this.get_category();
+  },
 };
 </script>
 

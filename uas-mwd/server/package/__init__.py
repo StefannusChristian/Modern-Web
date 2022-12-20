@@ -11,3 +11,4 @@ Session(app)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 from package import routes, models
+

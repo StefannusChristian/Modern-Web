@@ -1,7 +1,7 @@
 import os
 from package import app, db
-from flask import render_template, redirect, request, url_for, session, jsonify, send_from_directory
-from package.models import User, Product, Invoice, InvoiceDetail
+from flask import request, jsonify, send_from_directory
+from package.models import Product, Invoice, InvoiceDetail, Category
 import datetime
 
 @app.route('/latest_invoice_no', methods=['GET'])
@@ -28,50 +28,21 @@ def save_invoice():
         return 'Content-Type not supported!'
 
 
-@app.route('/pakaian', methods=['GET'])
-def pakaian():
-    all_pakaian = Product.query.filter_by(category_id=1).all()
-    pakaian_list = []
+@app.route('/categories/<category_id>', methods=['GET'])
+def get_products(category_id):
+    all_get_products = Product.query.filter_by(category_id=category_id).all()
+    get_products_list = []
 
-    for i in range(len(all_pakaian)):
-        pakaian_list.append({
-            'product_id': all_pakaian[i].product_id,
-            'category_id': all_pakaian[i].category_id,
-            'product_name': all_pakaian[i].product_name,
-            'product_price': all_pakaian[i].product_price,
-            'img_filepath': all_pakaian[i].img_filepath,
+    for i in range(len(all_get_products)):
+        get_products_list.append({
+            'product_id': all_get_products[i].product_id,
+            'category_id': all_get_products[i].category_id,
+            'product_name': all_get_products[i].product_name,
+            'product_price': all_get_products[i].product_price,
+            'img_filepath': all_get_products[i].img_filepath,
         })
-    return jsonify(pakaian_list)
+    return jsonify(get_products_list)
     
-@app.route('/makanan', methods=['GET'])
-def makanan():
-    all_makanan = Product.query.filter_by(category_id=2).all()
-    makanan_list = []
-
-    for i in range(len(all_makanan)):
-        makanan_list.append({
-            'product_id': all_makanan[i].product_id,
-            'category_id': all_makanan[i].category_id,
-            'product_name': all_makanan[i].product_name,
-            'product_price': all_makanan[i].product_price,
-            'img_filepath': all_makanan[i].img_filepath,
-        })
-    return jsonify(makanan_list)
-    
-@app.route('/alat_tulis', methods=['GET'])
-def alat_tulis():
-    all_alat_tulis = Product.query.filter_by(category_id=3).all()
-    alat_tulis_list = []
-
-    for i in range(len(all_alat_tulis)):
-        alat_tulis_list.append({
-            'product_id': all_alat_tulis[i].product_id,
-            'category_id': all_alat_tulis[i].category_id,
-            'product_name': all_alat_tulis[i].product_name,
-            'product_price': all_alat_tulis[i].product_price,
-            'img_filepath': all_alat_tulis[i].img_filepath,
-        })
-    return jsonify(alat_tulis_list)
 
 @app.route('/report_sales', methods=['GET'])
 def report_sales():
@@ -87,6 +58,15 @@ def report_sales():
         })
     return jsonify(all_invoices)
 
+@app.route('/categories', methods=['GET'])
+def categories():
+    get_categories = Category.query.all()
+    category_names = []
+    for i in range(len(get_categories)):
+        category_names.append({"category_id":get_categories[i].category_id,
+        "category_name": get_categories[i].category_name
+            })
+    return jsonify(category_names)
 
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))

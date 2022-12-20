@@ -1,20 +1,20 @@
 <template>
-  <h1 class="mb-3">Ini Component Makanan</h1>
+  <h1 class="mb-3">Ini Categories!</h1>
   <div class="d-flex row flex-wrap justify-content-center">
     <div
       class="card product-card px-0 mx-2 mb-3"
-      v-for="makan in makanan"
-      :key="makan.product_id"
-      :id="makan.product_id"
+      v-for="product in products"
+      :key="product.product_id"
+      :id="product.product_id"
     >
-      <img :src="makan.img_filepath" alt="" class="card-img-top img-fluid" />
+      <img :src="product.img_filepath" alt="" class="card-img-top img-fluid" />
       <div class="card-body">
         <h5 class="card-title">
-          {{ makan.product_name }}
+          {{ product.product_name }}
         </h5>
-        <h6 class="card-subtitle mb-2">{{ makan.product_price }}</h6>
+        <h6 class="card-subtitle mb-2">{{ product.product_price }}</h6>
         <button
-          @click="add_product(makan.product_id)"
+          @click="add_product(product.product_id)"
           class="btn btn-dark d-block w-100"
         >
           <i class="bi bi-cart-plus-fill me-2"></i>Add Product
@@ -28,20 +28,22 @@
 import axios from "axios";
 
 export default {
-  name: "Makanan",
+  name: "Categories",
   data() {
     return {
-      makanan: [],
+      products: [],
+      current_category_id: "1",
     };
   },
-
   methods: {
-    getMakanan() {
-      const path = "http://127.0.0.1:5000/makanan";
+    get_products() {
+      const path =
+        "http://127.0.0.1:5000/categories/" + this.current_category_id;
+      console.log(path);
       axios
         .get(path)
         .then((res) => {
-          let makanan = [];
+          let products = [];
           let rupiah = this.to_rupiah;
           res.data.forEach(function (obj) {
             obj.img_filepath = "http://127.0.0.1:5000/" + obj.img_filepath;
@@ -50,15 +52,16 @@ export default {
               obj.product_name.slice(1);
             obj.product_price_int = obj.product_price;
             obj.product_price = rupiah(obj.product_price);
-            makanan.push(obj);
+            products.push(obj);
           });
-          this.makanan = makanan;
+          this.products = products;
         })
         .catch((error) => {
           // eslint-disable-next-line
           console.error(error);
         });
     },
+
     to_rupiah(num) {
       return new Intl.NumberFormat("id-ID", {
         style: "currency",
@@ -67,26 +70,30 @@ export default {
         .format(num)
         .slice(0, -3);
     },
-    add_product(makanan_id) {
-      let product_index = this.get_product_id_index(makanan_id);
+    add_product(product_id) {
+      let product_index = this.get_product_id_index(product_id);
       let product = {
-        product_id: makanan_id,
-        product_name: this.makanan[product_index].product_name,
-        product_price: this.makanan[product_index].product_price_int,
+        product_id: product_id,
+        product_name: this.products[product_index].product_name,
+        product_price: this.products[product_index].product_price_int,
         product_qty: 1,
       };
       this.emitter.emit("add_product", product);
     },
-    get_product_id_index(makanan_id) {
-      for (let index = 0; index < this.makanan.length; index++) {
-        if (this.makanan[index].product_id === makanan_id) {
+    get_product_id_index(product_id) {
+      for (let index = 0; index < this.products.length; index++) {
+        if (this.products[index].product_id === product_id) {
           return index;
         }
       }
     },
   },
   created() {
-    this.getMakanan();
+    this.get_products();
+    this.emitter.on("select_category", (category_id) => {
+      this.current_category_id = category_id;
+      this.get_products();
+    });
   },
 };
 </script>
