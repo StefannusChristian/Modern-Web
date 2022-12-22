@@ -1,28 +1,28 @@
 <template>
-  <div class="d-flex justify-content-between py-3 px-5" v-if="loggedIn">
+  <div
+    class="d-flex justify-content-between py-3 px-5"
+    v-if="loggedIn && showSideBar"
+  >
     <h1 class="fw-800">Point of Sales App</h1>
     <ProductNavigation />
   </div>
   <div class="my-3 p-3 d-flex flex-row" v-if="loggedIn">
     <LeftSidebar v-if="showSideBar" :latestInvoiceNo="latestInvoiceNo" />
     <div :class="[!showSideBar ? 'w-100' : 'w-75', 'px-5']">
-      <small class="d-block fw-500 text-muted" v-if="showSideBar"
-        >Product Category</small
-      >
       <router-view />
       <router-link
         @click="toggleSideBar()"
-        class="btn btn-primary mt-3"
+        class="btn btn-primary mt-3 fixed-bottom rounded-0 fs-3"
         to="/report_sales"
         v-if="showSideBar"
-        >Report Sales</router-link
+        ><i class="bi bi-clipboard-data-fill me-2"></i>Report Sales</router-link
       >
       <router-link
         @click="toggleSideBar()"
-        class="btn btn-primary mt-3"
+        class="btn btn-primary mt-3 fixed-bottom rounded-0 fs-3"
         to="/"
         v-else
-        >Go Back</router-link
+        ><i class="bi bi-arrow-left me-2"></i>Go Back</router-link
       >
     </div>
   </div>
@@ -43,7 +43,11 @@ export default {
     Login,
   },
   data() {
-    return { latestInvoiceNo: null, showSideBar: true, loggedIn: false };
+    return {
+      latestInvoiceNo: null,
+      showSideBar: true,
+      loggedIn: false,
+    };
   },
   methods: {
     getLatestInvoiceNo() {
@@ -53,6 +57,7 @@ export default {
     },
     toggleSideBar() {
       this.showSideBar = !this.showSideBar;
+      this.checkout = !this.checkout;
     },
     toggleLoggedInFlag() {
       if (sessionStorage.getItem("currentLoggedIn") !== null) {
@@ -75,6 +80,17 @@ export default {
     });
     this.emitter.on("get-new-invoice-no", () => {
       this.getLatestInvoiceNo();
+    });
+    this.emitter.on("checkout", () => {
+      this.checkout = !this.checkout;
+      this.showSideBar = !this.showSideBar;
+    });
+    this.emitter.on("payment-good", () => {
+      this.checkout = !this.checkout;
+      this.showSideBar = !this.showSideBar;
+    });
+    this.emitter.on("disable_side_bar", () => {
+      this.showSideBar = false;
     });
   },
 };

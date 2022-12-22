@@ -1,10 +1,10 @@
 <template>
-  <div class="container w-25">
+  <div class="container w-25 mb-5">
     <div class="p-3 bg-light">
       <div class="mb-3">
         <div class="bg-white p-3 rounded-3">
           <span class="fs-6 text-muted d-block">Admin</span>
-          <span class="fw-600 fs-5">John Doe</span>
+          <span class="fw-600 fs-5">{{ currentUser }}</span>
         </div>
       </div>
       <div class="mb-3 px-1">
@@ -61,9 +61,9 @@
           </li>
         </ul>
       </div>
-      <h5 class="mb-3">
-        <span class="fw- fs-6 mb-2 fw-500">Total</span><br />
-        <span class="fw-600">
+      <div class="d-flex align-items-center justify-content-between">
+        <span class="d-block fs-6">Subtotal</span><br />
+        <span class="d-block fs-6">
           {{
             new Intl.NumberFormat("id-ID", {
               style: "currency",
@@ -73,12 +73,41 @@
               .slice(0, -3)
           }}
         </span>
-      </h5>
+      </div>
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <div>
+          <span class="fs-6 mb-2 fw-500">Diskon</span><br />
+          <span class="fw-600"> {{ diskon }}% </span>
+        </div>
+        <div class="text-danger">
+          -{{
+            new Intl.NumberFormat("id-ID", {
+              style: "currency",
+              currency: "IDR",
+            })
+              .format(price_after_discount.cutoff)
+              .slice(0, -3)
+          }}
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <span class="d-block fs-6 mb-2 fw-500">Total After Discount</span><br />
+        <span class="d-block fw-600">
+          {{
+            new Intl.NumberFormat("id-ID", {
+              style: "currency",
+              currency: "IDR",
+            })
+              .format(price_after_discount.price)
+              .slice(0, -3)
+          }}
+        </span>
+      </div>
       <button
         class="btn btn-success d-block w-100 mb-1 text-start"
-        @click="pay_product()"
+        @click="checkout()"
       >
-        <i class="bi bi-credit-card-2-back-fill me-2"></i> Pay
+        <i class="bi bi-credit-card-2-back-fill me-2"></i>Checkout
       </button>
       <button @click="cancel" class="btn btn-danger d-block w-100 text-start">
         <i class="bi bi-x-square-fill me-2"></i>Cancel
@@ -102,7 +131,6 @@
 </template>
 
 <script>
-import axios from "axios";
 export default {
   name: "LeftSidebar",
   data() {
@@ -110,6 +138,7 @@ export default {
       product_list: [],
       currentDate: this.formatDate(),
       pay_warning_message: "",
+      currentUser: sessionStorage.getItem("currentLoggedIn"),
     };
   },
   props: {
@@ -141,21 +170,20 @@ export default {
         this.product_list.shift();
       }
     },
-    pay_product() {
-      const post_url = "http://127.0.0.1:5000/save_invoice";
+    checkout() {
       if (this.product_list.length > 0) {
         this.pay_warning_message = "";
-        axios
-          .post(post_url, JSON.stringify(this.product_list), {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then((response) => console.log(response))
-          .catch((error) => console.log(error));
+        localStorage.setItem("product_list", JSON.stringify(this.product_list));
+        this.$router.push({
+          path: "payment_page",
+          query: {
+            diskon: this.diskon,
+            final_price: this.price_after_discount.price,
+          },
+        });
         this.product_list = [];
-        this.$router.push("/payment_success");
         this.emitter.emit("get-new-invoice-no");
+        this.emitter.emit("checkout");
       } else {
         this.pay_warning_message = "Product list is empty.";
       }
@@ -181,7 +209,6 @@ export default {
       return currentDate;
     },
   },
-
   computed: {
     total_invoice() {
       let total = 0;
@@ -190,11 +217,32 @@ export default {
       });
       return total;
     },
-  },
+    price_after_discount() {
+      let dis = parseInt(this.diskon);
+      let one_hundred_minus_dis = (100 - dis) / 100;
+      return {
+        price: one_hundred_minus_dis * this.total_invoice,
+        cutoff: (dis / 100) * this.total_invoice,
+      };
+    },
+    diskon() {
+      let dis = "0";
+      let total_price = this.total_invoice;
 
+      if (total_price >= 1000000) {
+        dis = "50";
+      } else if (total_price >= 500000) {
+        dis = "20";
+      } else if (total_price >= 200000) {
+        dis = "10";
+      } else if (total_price >= 100000) {
+        dis = "5";
+      }
+      return dis;
+    },
+  },
   mounted() {
     this.emitter.on("add_product", (item) => {
-      console.log(item.product_name);
       this.add_product(item);
     });
   },

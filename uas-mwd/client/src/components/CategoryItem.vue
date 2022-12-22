@@ -1,6 +1,5 @@
 <template>
-  <h1 class="mb-3">Ini Categories!</h1>
-  <div class="d-flex row flex-wrap justify-content-center">
+  <div class="d-flex row flex-wrap justify-content-center mb-5">
     <div
       class="card product-card px-0 mx-2 mb-3"
       v-for="product in products"
@@ -39,7 +38,6 @@ export default {
     get_products() {
       const path =
         "http://127.0.0.1:5000/categories/" + this.current_category_id;
-      console.log(path);
       axios
         .get(path)
         .then((res) => {
