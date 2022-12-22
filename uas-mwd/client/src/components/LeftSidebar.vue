@@ -147,8 +147,9 @@ export default {
         this.pay_warning_message = "";
         localStorage.setItem("product_list", JSON.stringify(this.product_list));
         this.product_list = [];
-        // this.emitter.emit("get-new-invoice-no");
+        this.emitter.emit("get-new-invoice-no");
         this.$router.push("/payment_page");
+        this.emitter.emit("checkout");
       } else {
         this.pay_warning_message = "Product list is empty.";
       }
@@ -174,7 +175,6 @@ export default {
       return currentDate;
     },
   },
-
   computed: {
     total_invoice() {
       let total = 0;
@@ -184,7 +184,6 @@ export default {
       return total;
     },
   },
-
   mounted() {
     this.emitter.on("add_product", (item) => {
       this.add_product(item);

@@ -80,7 +80,7 @@ def report_sales():
                     invoice_detail_item = {
                         "invoice_detail_id": invoice_detail_query[j].invoice_detail_id,
                         "invoice_id" : invoice_detail_query[j].invoice_id,
-                        "product_id": invoice_detail_query[j].product_id,
+                        "product_name": Product.query.filter_by(product_id=invoice_detail_query[j].product_id).first().product_name,
                         "qty": invoice_detail_query[j].qty
                     }
                     invoice_details[get_invoices[i].invoice_id].append(invoice_detail_item)
