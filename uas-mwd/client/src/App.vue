@@ -85,6 +85,10 @@ export default {
       this.checkout = !this.checkout;
       this.showSideBar = !this.showSideBar;
     });
+    this.emitter.on("payment-good", () => {
+      this.checkout = !this.checkout;
+      this.showSideBar = !this.showSideBar;
+    });
   },
 };
 </script>

@@ -13,25 +13,55 @@
         }}</span>
       </div>
     </div>
-    <ul class="list-group">
-      <li
-        v-for="invoice in invoices"
-        :key="invoice.invoiceId"
-        :id="invoice.invoiceId"
-        class="list-group-item"
-      >
-        InvoiceID: {{ invoice.invoiceId }}<br />
-        <ul>
-          <li
-            v-for="invoiceDetail in invoice.details"
-            :key="invoiceDetail.invoice_detail_id"
-          >
-            Product: {{ invoiceDetail.product_name }} ({{ invoiceDetail.qty }})
-          </li>
-        </ul>
-        Total: {{ invoice.totalPrice }}
-      </li>
-    </ul>
+    <div class="d-flex align-items-start justify-content-between">
+      <div class="w-50">
+        <div
+          v-for="invoice in invoices"
+          :key="invoice.invoiceId"
+          :id="invoice.invoiceId"
+          class="p-3 rounded-2 bg-light mb-1"
+        >
+          InvoiceID: {{ invoice.invoiceId }}<br />
+          <ul>
+            <li
+              v-for="invoiceDetail in invoice.details"
+              :key="invoiceDetail.invoice_detail_id"
+            >
+              {{ invoiceDetail.product_name }} ({{ invoiceDetail.qty }})
+            </li>
+          </ul>
+          Total: {{ invoice.totalPrice }}
+        </div>
+      </div>
+      <div class="w-50 px-4">
+        <h3 class="mb-3">Sales per Category</h3>
+        <div class="container p-3 rounded-3">
+          <h5 class="fw-600">Pakaian</h5>
+          <table class="table table-striped">
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Sales</th>
+            </tr>
+            <tr>
+              <td>Kaos</td>
+              <td>120</td>
+              <td>Rp 3.000.000</td>
+            </tr>
+            <tr>
+              <td>Hoodie</td>
+              <td>120</td>
+              <td>Rp 3.000.000</td>
+            </tr>
+            <tr>
+              <td>Sweater</td>
+              <td>120</td>
+              <td>Rp 3.000.000</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
