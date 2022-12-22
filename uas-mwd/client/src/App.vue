@@ -89,6 +89,9 @@ export default {
       this.checkout = !this.checkout;
       this.showSideBar = !this.showSideBar;
     });
+    this.emitter.on("disable_side_bar", () => {
+      this.showSideBar = false;
+    });
   },
 };
 </script>
