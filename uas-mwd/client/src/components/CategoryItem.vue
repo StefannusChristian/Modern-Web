@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex row flex-wrap justify-content-center">
+  <div class="d-flex row flex-wrap justify-content-center mb-5">
     <div
       class="card product-card px-0 mx-2 mb-3"
       v-for="product in products"

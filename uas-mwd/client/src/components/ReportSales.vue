@@ -1,17 +1,24 @@
 <template>
-  <div class="w-100">
+  <div class="w-100 mb-5 container py-3">
     <h2 class="mb-3">Report Sales</h2>
-    <div class="mb-3">
-      <small>Total Sales: </small><br /><span class="fw-600 fs-3">{{
-        total_sales_display
-      }}</span>
+    <div
+      class="mb-3 d-flex justify-content-between align-items-center container"
+    >
+      <div>
+        <span>Admin:</span><br /><span class="fs-2 fw-600">{{ username }}</span>
+      </div>
+      <div>
+        <small>Total Sales: </small><br /><span class="fw-600 fs-3">{{
+          total_sales_display
+        }}</span>
+      </div>
     </div>
-    <ul>
+    <ul class="list-group">
       <li
         v-for="invoice in invoices"
         :key="invoice.invoiceId"
         :id="invoice.invoiceId"
-        class="mb-2 bg-light p-2 rounded-2"
+        class="list-group-item"
       >
         InvoiceID: {{ invoice.invoiceId }}<br />
         <ul>
@@ -19,7 +26,7 @@
             v-for="invoiceDetail in invoice.details"
             :key="invoiceDetail.invoice_detail_id"
           >
-            Product ID: {{ invoiceDetail.product_id }} x{{ invoiceDetail.qty }}
+            Product: {{ invoiceDetail.product_name }} x{{ invoiceDetail.qty }}
           </li>
         </ul>
         Total: {{ invoice.totalPrice }}
@@ -37,6 +44,7 @@ export default {
       invoices: [],
       total_user_sales: 0,
       total_sales_display: null,
+      username: sessionStorage.getItem("currentLoggedIn"),
     };
   },
   methods: {
@@ -55,8 +63,9 @@ export default {
           }
         )
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           this.processInvoiceData(res.data);
+          console.log(this.invoices);
         })
         .catch((error) => {
           // eslint-disable-next-line
