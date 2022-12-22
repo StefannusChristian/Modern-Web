@@ -4,6 +4,7 @@ from flask import request, jsonify, send_from_directory
 from package.models import User,Product, Invoice, InvoiceDetail, Category
 import datetime
 from werkzeug.security import check_password_hash
+from sqlalchemy import text
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -118,6 +119,24 @@ def get_products(category_id):
             'img_filepath': all_get_products[i].img_filepath,
         })
     return jsonify(get_products_list)
+
+@app.route('/sales_per_category<user_id>', methods=['GET'])
+def sales_per_category(user_id):
+    sql = text(f"SELECT * FROM Invoice INNER JOIN Invoice_Detail ON Invoice.invoice_id = Invoice_Detail.invoice_id INNER JOIN Product ON Invoice_Detail.product_id = Product.product_id")
+    result = db.engine.execute(sql)
+    collect = []
+    for x in result:
+        collect.append({
+            "user_id": x[1],
+            "product_id":x[7],
+            "qty":x[8],
+            "product_price":x[12],
+            "category_id":x[10]
+        })
+    return jsonify(collect)
+
+
+    
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(APP_ROOT, 'images')
