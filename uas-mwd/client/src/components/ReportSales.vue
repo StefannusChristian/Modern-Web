@@ -13,6 +13,29 @@
         }}</span>
       </div>
     </div>
+    <h1>Per Invoice</h1>
+    <!-- Per Invoice ID -->
+    <ul class="list-group">
+      <li
+        v-for="invoice in invoices"
+        :key="invoice.invoiceId"
+        :id="invoice.invoiceId"
+        class="list-group-item"
+      >
+        InvoiceID: {{ invoice.invoiceId }}<br />
+        <ul>
+          <li
+            v-for="invoiceDetail in invoice.details"
+            :key="invoiceDetail.invoice_detail_id"
+          >
+            Product: {{ invoiceDetail.product_name }} ({{ invoiceDetail.qty }})
+          </li>
+        </ul>
+        Total: {{ invoice.totalPrice }}
+      </li>
+    </ul>
+    <h1>Per Category</h1>
+    <!-- Per Category -->
     <ul class="list-group">
       <li
         v-for="invoice in invoices"
@@ -52,6 +75,28 @@ export default {
       const username = sessionStorage.getItem("currentLoggedIn");
       console.log(username);
       const path = "http://127.0.0.1:5000/report_sales";
+      axios
+        .post(
+          path,
+          { username: username },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          // console.log(res);
+          this.processInvoiceData(res.data);
+          console.log(this.invoices);
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
+    getCurrentUserId() {
+      const path = "http://127.0.0.1:5000/sales_per_category" + this.username;
       axios
         .post(
           path,
