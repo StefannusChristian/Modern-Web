@@ -120,22 +120,29 @@ def get_products(category_id):
         })
     return jsonify(get_products_list)
 
-@app.route('/sales_per_category<user_id>', methods=['GET'])
-def sales_per_category(user_id):
-    sql = text(f"SELECT * FROM Invoice INNER JOIN Invoice_Detail ON Invoice.invoice_id = Invoice_Detail.invoice_id INNER JOIN Product ON Invoice_Detail.product_id = Product.product_id")
-    result = db.engine.execute(sql)
-    collect = []
-    for x in result:
-        collect.append({
-            "user_id": x[1],
-            "product_id":x[7],
-            "qty":x[8],
-            "product_price":x[12],
-            "category_id":x[10]
-        })
-    return jsonify(collect)
+@app.route('/sales_per_category', methods=['POST'])
+def sales_per_category():
+    if request.method == 'POST':
+        data = request.get_json()["username"];
+        user = User.query.filter_by(user_name=data).first()
+        user_id = user.user_id
 
+        sql = text(f"SELECT *, SUM(invoice_detail.qty) as sum_qty FROM Invoice INNER JOIN Invoice_Detail ON Invoice.invoice_id = Invoice_Detail.invoice_id INNER JOIN Product ON Invoice_Detail.product_id = Product.product_id WHERE Invoice.user_id={user_id} GROUP BY invoice_detail.product_id;")
 
+        result = db.engine.execute(sql)
+        collect = []
+        for x in result:
+            cat_name = Category.query.filter_by(category_id=x[10]).first().category_name
+            product_name = Product.query.filter_by(product_id=x[7]).first().product_name
+            collect.append({
+                "user_id": x[1],
+                "product_name": product_name,
+                "sum_qty": x[-1],
+                "product_price":x[12],
+                "category_id":x[10],
+                "category_name": cat_name,
+            })
+        return jsonify(collect)
     
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))

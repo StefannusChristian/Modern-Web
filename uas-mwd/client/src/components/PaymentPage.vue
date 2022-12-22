@@ -13,19 +13,63 @@
       <tbody>
         <tr v-for="product in productList" :key="product.product_id">
           <td>{{ product.product_name }}</td>
-          <td>{{ product.product_price }}</td>
+          <td>
+            {{
+              new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+              })
+                .format(product.product_price)
+                .slice(0, -3)
+            }}
+          </td>
           <td>{{ product.product_qty }}</td>
-          <td>{{ product.product_price * product.product_qty }}</td>
-        </tr>
-        <tr>
-          <td>{{ diskon }}</td>
-          <td>{{ price_after_discount }}</td>
+          <td>
+            {{
+              new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+              })
+                .format(product.product_price * product.product_qty)
+                .slice(0, -3)
+            }}
+          </td>
         </tr>
         <tr>
           <td></td>
           <td></td>
-          <td class="fw-600">Subtotal</td>
-          <td class="fw-600">{{ getSubtotal }}</td>
+          <td>Subtotal</td>
+          <td>
+            {{
+              new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+              })
+                .format(getSubtotal)
+                .slice(0, -3)
+            }}
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td>Discount</td>
+          <td>{{ diskon }}%</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="fw-700">Total</td>
+          <td class="fw-700">
+            {{
+              new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+              })
+                .format(price_after_discount)
+                .slice(0, -3)
+            }}
+          </td>
         </tr>
       </tbody>
     </table>

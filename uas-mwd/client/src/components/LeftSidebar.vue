@@ -1,5 +1,5 @@
 <template>
-  <div class="container w-25">
+  <div class="container w-25 mb-5">
     <div class="p-3 bg-light">
       <div class="mb-3">
         <div class="bg-white p-3 rounded-3">
@@ -61,9 +61,9 @@
           </li>
         </ul>
       </div>
-      <h5 class="mb-3">
-        <span class="fw- fs-6 mb-2 fw-500">Total Before Discount</span><br />
-        <span class="fw-600">
+      <div class="d-flex align-items-center justify-content-between">
+        <span class="d-block fs-6">Subtotal</span><br />
+        <span class="d-block fs-6">
           {{
             new Intl.NumberFormat("id-ID", {
               style: "currency",
@@ -73,24 +73,36 @@
               .slice(0, -3)
           }}
         </span>
-      </h5>
-      <h5 class="mb-3">
-        <span class="fw- fs-6 mb-2 fw-500">Total After Discount</span><br />
-        <span class="fw-600">
+      </div>
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <div>
+          <span class="fs-6 mb-2 fw-500">Diskon</span><br />
+          <span class="fw-600"> {{ diskon }}% </span>
+        </div>
+        <div class="text-danger">
+          -{{
+            new Intl.NumberFormat("id-ID", {
+              style: "currency",
+              currency: "IDR",
+            })
+              .format(price_after_discount.cutoff)
+              .slice(0, -3)
+          }}
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <span class="d-block fs-6 mb-2 fw-500">Total After Discount</span><br />
+        <span class="d-block fw-600">
           {{
             new Intl.NumberFormat("id-ID", {
               style: "currency",
               currency: "IDR",
             })
-              .format(price_after_discount)
+              .format(price_after_discount.price)
               .slice(0, -3)
           }}
         </span>
-      </h5>
-      <h5 class="mb-3">
-        <span class="fw- fs-6 mb-2 fw-500">Diskon</span><br />
-        <span class="fw-600"> {{ diskon }}% </span>
-      </h5>
+      </div>
       <button
         class="btn btn-success d-block w-100 mb-1 text-start"
         @click="checkout()"
@@ -166,7 +178,7 @@ export default {
           path: "payment_page",
           query: {
             diskon: this.diskon,
-            final_price: this.price_after_discount,
+            final_price: this.price_after_discount.price,
           },
         });
         this.product_list = [];
@@ -208,7 +220,10 @@ export default {
     price_after_discount() {
       let dis = parseInt(this.diskon);
       let one_hundred_minus_dis = (100 - dis) / 100;
-      return one_hundred_minus_dis * this.total_invoice;
+      return {
+        price: one_hundred_minus_dis * this.total_invoice,
+        cutoff: (dis / 100) * this.total_invoice,
+      };
     },
     diskon() {
       let dis = "0";
