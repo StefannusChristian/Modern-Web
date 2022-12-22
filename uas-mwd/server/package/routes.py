@@ -40,19 +40,25 @@ def save_invoice():
     content_type = request.headers.get('Content-Type')
     if (content_type == 'application/json'):
         product_list = request.json
-        total_price = sum([item['product_price']*item['product_qty'] for item in product_list])
+        print(product_list)
+        # POST data to Invoice Table
+        user_id = User.query.filter_by(user_name=product_list['user_name']).first().user_id
+        print(user_id,"INI USER ID WOIII")
+        price_after_discount = product_list['price_after_diskon']
+        the_discount = product_list['diskon']
         inv_date = datetime.date.today()
-        new_invoice = Invoice(1,total_price,10,inv_date)
+        new_invoice = Invoice(user_id,price_after_discount,the_discount,inv_date)
         db.session.add(new_invoice)
         db.session.commit()
+
+        # POST data to Invoice Detail Table
         latest_invoice_id = Invoice.query.all()[-1].invoice_id
-        for item in product_list:
+        for item in product_list['product_list']:
             new_invoice_detail = InvoiceDetail(latest_invoice_id,item['product_id'],item['product_qty'])
             db.session.add(new_invoice_detail)
         db.session.commit()
-        return jsonify(total_price)
-    else: 
-        return 'Content-Type not supported!'
+        return jsonify(product_list)
+    else: return 'Content-Type not supported!'
 
 @app.route('/report_sales', methods=['POST'])
 def report_sales():

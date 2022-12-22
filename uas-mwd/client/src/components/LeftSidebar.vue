@@ -62,7 +62,7 @@
         </ul>
       </div>
       <h5 class="mb-3">
-        <span class="fw- fs-6 mb-2 fw-500">Total</span><br />
+        <span class="fw- fs-6 mb-2 fw-500">Total Before Discount</span><br />
         <span class="fw-600">
           {{
             new Intl.NumberFormat("id-ID", {
@@ -73,6 +73,23 @@
               .slice(0, -3)
           }}
         </span>
+      </h5>
+      <h5 class="mb-3">
+        <span class="fw- fs-6 mb-2 fw-500">Total After Discount</span><br />
+        <span class="fw-600">
+          {{
+            new Intl.NumberFormat("id-ID", {
+              style: "currency",
+              currency: "IDR",
+            })
+              .format(price_after_discount)
+              .slice(0, -3)
+          }}
+        </span>
+      </h5>
+      <h5 class="mb-3">
+        <span class="fw- fs-6 mb-2 fw-500">Diskon</span><br />
+        <span class="fw-600"> {{ diskon }}% </span>
       </h5>
       <button
         class="btn btn-success d-block w-100 mb-1 text-start"
@@ -102,7 +119,6 @@
 </template>
 
 <script>
-import axios from "axios";
 export default {
   name: "LeftSidebar",
   data() {
@@ -146,9 +162,15 @@ export default {
       if (this.product_list.length > 0) {
         this.pay_warning_message = "";
         localStorage.setItem("product_list", JSON.stringify(this.product_list));
+        this.$router.push({
+          path: "payment_page",
+          query: {
+            diskon: this.diskon,
+            final_price: this.price_after_discount,
+          },
+        });
         this.product_list = [];
         this.emitter.emit("get-new-invoice-no");
-        this.$router.push("/payment_page");
         this.emitter.emit("checkout");
       } else {
         this.pay_warning_message = "Product list is empty.";
@@ -182,6 +204,26 @@ export default {
         total += item.product_price * item.product_qty;
       });
       return total;
+    },
+    price_after_discount() {
+      let dis = parseInt(this.diskon);
+      let one_hundred_minus_dis = (100 - dis) / 100;
+      return one_hundred_minus_dis * this.total_invoice;
+    },
+    diskon() {
+      let dis = "0";
+      let total_price = this.total_invoice;
+
+      if (total_price >= 1000000) {
+        dis = "50";
+      } else if (total_price >= 500000) {
+        dis = "20";
+      } else if (total_price >= 200000) {
+        dis = "10";
+      } else if (total_price >= 100000) {
+        dis = "5";
+      }
+      return dis;
     },
   },
   mounted() {

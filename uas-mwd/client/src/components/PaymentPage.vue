@@ -18,6 +18,10 @@
           <td>{{ product.product_price * product.product_qty }}</td>
         </tr>
         <tr>
+          <td>{{ diskon }}</td>
+          <td>{{ price_after_discount }}</td>
+        </tr>
+        <tr>
           <td></td>
           <td></td>
           <td class="fw-600">Subtotal</td>
@@ -41,14 +45,22 @@ export default {
     return {
       productList: [],
       subtotal: 0,
+      diskon: 0,
+      price_after_discount: 0,
     };
   },
   methods: {
     confirmPayment() {
       const post_url = "http://127.0.0.1:5000/save_invoice";
+      let new_product_list = {
+        product_list: this.productList,
+        diskon: this.diskon,
+        price_after_diskon: this.price_after_discount,
+        user_name: sessionStorage.getItem("currentLoggedIn"),
+      };
       if (this.productList.length > 0) {
         axios
-          .post(post_url, JSON.stringify(this.productList), {
+          .post(post_url, JSON.stringify(new_product_list), {
             headers: {
               "Content-Type": "application/json",
             },
@@ -64,16 +76,21 @@ export default {
   },
   computed: {
     getSubtotal() {
-      for (let i = 0; i < this.productList.length; i++) {
-        let amount =
-          this.productList[i].product_price * this.productList[i].product_qty;
-        this.subtotal += amount;
+      let productList = JSON.parse(localStorage.getItem("product_list"));
+      for (let index = 0; index < productList.length; index++) {
+        let qty = productList[index].product_qty;
+        let price = productList[index].product_price;
+        let total_price = qty * price;
+        this.subtotal += total_price;
       }
+      return this.subtotal;
     },
   },
   mounted() {
     const product_list = JSON.parse(localStorage.getItem("product_list"));
     this.productList = product_list;
+    this.diskon = JSON.parse(this.$route.query.diskon);
+    this.price_after_discount = JSON.parse(this.$route.query.final_price);
   },
 };
 </script>

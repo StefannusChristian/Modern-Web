@@ -26,7 +26,7 @@
             v-for="invoiceDetail in invoice.details"
             :key="invoiceDetail.invoice_detail_id"
           >
-            Product: {{ invoiceDetail.product_name }} x{{ invoiceDetail.qty }}
+            Product: {{ invoiceDetail.product_name }} ({{ invoiceDetail.qty }})
           </li>
         </ul>
         Total: {{ invoice.totalPrice }}
