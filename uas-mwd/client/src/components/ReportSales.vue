@@ -1,5 +1,6 @@
 <template>
   <div class="w-100 mb-5 container py-3">
+    <!-- <pre> {{ categorySales }} </pre> -->
     <pre> {{ get_all_prices() }} </pre>
     <h2 class="mb-3 fw-800 fs-1">Report Sales</h2>
     <div
@@ -133,7 +134,11 @@ export default {
         let total = 0;
         this.categorySales[item].forEach((product) => {
           console.log(product);
-          total += product.product_price * parseInt(product.sum_qty);
+          total +=
+            product.product_price * parseInt(product.sum_qty) -
+            product.product_price *
+              parseInt(product.sum_qty) *
+              (product.dis / 100);
           console.log(product.product_price);
           console.log(product.sum_qty);
         });
@@ -162,6 +167,8 @@ export default {
               this.categorySales.Makanan.push(data[i]);
             } else if (data[i].category_id === 3) {
               this.categorySales.AlatTulis.push(data[i]);
+              // } else if (data[i].category_id === 4) {
+              // this.categorySales.Laptop.push(data[i]);
             }
           }
         })

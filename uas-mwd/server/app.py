@@ -73,6 +73,13 @@ def create_tables():
         db.session.add(gunting)
         db.session.add(rautan)
         db.session.add(pena)
+
+        # teknologi = Category("Laptop")
+        # db.session.add(teknologi)
+        # laptop = Product(4,"laptop",5000000,"")
+        # db.session.add(laptop)
+
+
         db.session.commit()
 
 if __name__ == '__main__':

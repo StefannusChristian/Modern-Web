@@ -20,7 +20,6 @@ def login():
                 if check_password_hash(user.user_password, password):
                     data['message'] = 'login-success'
                     del data['password']
-                    print(username, password)
                     return data
                 return {'message': 'invalid-credentials'}   
             return {'message': 'invalid-credentials'}
@@ -141,6 +140,7 @@ def sales_per_category():
                 "product_price":x[12],
                 "category_id":x[10],
                 "category_name": cat_name,
+                "dis":x[3]
             })
         return jsonify(collect)
     
