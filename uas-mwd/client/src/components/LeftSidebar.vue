@@ -171,6 +171,10 @@ export default {
       }
     },
     checkout() {
+      localStorage.setItem(
+        "temp_product_list",
+        JSON.stringify(this.product_list)
+      );
       if (this.product_list.length > 0) {
         this.pay_warning_message = "";
         localStorage.setItem("product_list", JSON.stringify(this.product_list));
@@ -181,7 +185,6 @@ export default {
             final_price: this.price_after_discount.price,
           },
         });
-        this.product_list = [];
         this.emitter.emit("get-new-invoice-no");
         this.emitter.emit("checkout");
       } else {
@@ -245,6 +248,10 @@ export default {
     this.emitter.on("add_product", (item) => {
       this.add_product(item);
     });
+    if (localStorage.getItem("temp_product_list")) {
+      this.product_list = JSON.parse(localStorage.getItem("temp_product_list"));
+      console.log(this.product_list);
+    }
   },
 };
 </script>

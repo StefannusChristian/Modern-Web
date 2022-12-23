@@ -112,6 +112,7 @@ export default {
           .then((response) => console.log(response))
           .catch((error) => console.log(error));
         this.productList = [];
+        localStorage.clear("temp_product_list");
         this.subtotal = 0;
         this.$router.push("/");
         this.emitter.emit("payment-good");
