@@ -43,7 +43,6 @@ def save_invoice():
         print(product_list)
         # POST data to Invoice Table
         user_id = User.query.filter_by(user_name=product_list['user_name']).first().user_id
-        print(user_id,"INI USER ID WOIII")
         price_after_discount = product_list['price_after_diskon']
         the_discount = product_list['diskon']
         inv_date = datetime.date.today()

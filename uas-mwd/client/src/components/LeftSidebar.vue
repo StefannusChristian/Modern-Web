@@ -154,8 +154,10 @@ export default {
       return -1;
     },
     add_product(item) {
+      console.log("HALOO");
       this.pay_warning_message = "";
       let index = this.get_product_id_index(item);
+      console.log(index, "INI INDEX!!!");
       // Berarti belom ada di product list
       if (index === -1) {
         this.product_list.push(item);
